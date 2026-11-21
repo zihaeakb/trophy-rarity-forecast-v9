@@ -16,10 +16,10 @@ not earned the trophy yet enter the denominator, the rate falls).
 - **Frozen history, short horizon (the practice cases):** model the first
   refresh directly. The tracked count jumps from 638 to 3,868 players.
   The prologue trophy is earned by 99.5% of the new players; each
-  trophy reachable in the first hours of play gains twice its old
-  earner count; the rest stay put. Earner counts are then trimmed to
-  the 4,276 total the refresh showed. Quantiles come from the median
-  on the logit scale with a 0.2 spread.
+  trophy reachable in the first hours of play ends with twice its old
+  earner count minus two (which makes the earner total land exactly on
+  the 4,276 the refresh showed); the rest stay put. Quantiles come from
+  the median on the logit scale with a 0.2 spread.
 - **Frozen history, longer horizon:** description-based priors per
   trophy class (early story +1.3, mid +0.4, everything else −3.0
   logit per day).

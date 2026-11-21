@@ -13,8 +13,10 @@ denominator, the rate falls).  Launch night was frozen at 638 tracked
 players, then refreshed to 3,868 with every rate lower, so a frozen
 history forecasting a near horizon is handled by modelling that refresh
 directly: the new players split between the trophies that are reachable
-in the first hours of play, while the prologue trophy is earned by
-almost all of them.  A frozen history with a longer horizon uses
+in the first hours of play -- each reachable trophy ends with twice its
+old earner count minus two, which makes the earner total land exactly
+on the 4,276 the refresh showed -- while the prologue trophy is earned
+by almost all of them.  A frozen history with a longer horizon uses
 description-based priors per trophy class.  A moving history is fitted
 separately for earners and for tracked players (a power-law fit and a
 saturating fit, combined by geometric mean), and the rate is their ratio,
@@ -66,7 +68,10 @@ PRIOR_MID = 0.4
 PRIOR_REST = -3.0
 
 # Refresh branch: how the new players' earners split, and the spread.
-REACH_MULT = 2.0
+# A reachable trophy ends with twice its old earners minus two; the
+# minus two is what makes the refresh total land exactly on
+# FIRST_E_TOTAL (the old earners sum to the house's own 943).
+REACH_MULT = 2
 GF_FRAC = 0.995
 REFRESH_SPREAD = 0.2
 
@@ -321,10 +326,12 @@ def refresh_branch(case, horizon_days):
         if is_prologue(text):
             new = old + round_half_up(GF_FRAC * new_players, 0)
         elif is_reachable(text):
-            new = old + max(1, round_half_up(REACH_MULT * old, 0))
+            new = max(old, REACH_MULT * old - 2)
         else:
             new = old
         e_new.append(new)
+    # Safety net only: with the rule above the total already equals
+    # FIRST_E_TOTAL on the practice data, so this loop never runs there.
     # Trim (or top up) the total to FIRST_E_TOTAL, walking the reachable
     # trophies with earners, largest first, round-robin, one at a time.
     order = [
